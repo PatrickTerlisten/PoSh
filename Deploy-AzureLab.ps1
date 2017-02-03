@@ -32,8 +32,6 @@
 ## Establish connection to Azure
 # Do stuff
 
-
-
 ## Core Parameters for all entities
 $Location = 'WestEurope'
 $VMResourceGroupName = 'lab-vm-rg'
@@ -43,7 +41,6 @@ $Credential = Get-Credential
 ## VMs to create
 #$ListofVMs = 'DC01','DC02','CA01'
 $ListofVMs = 'DC01'
-
 
 ## Create Resource Group for core networking
 
@@ -65,7 +62,6 @@ else
     $SubnetName = New-AzureRmVirtualNetworkSubnetConfig -Name $SubnetName -AddressPrefix $VNetSubnetAddressPrefix
     New-AzureRmVirtualNetwork -Name $VNetName -ResourceGroupName $NetworkResourceGroupName -Location $Location -AddressPrefix $VNetAddressPrefix -Subnet $SubnetName
 
-  
 }
 
 ## Create Resource Group for VMs
