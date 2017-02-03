@@ -30,7 +30,7 @@
 #Requires -Module Azure, AzureRM.Profile
 
 ## Establish connection to Azure
-# Do stuff
+# Do some stuff
 
 ## Core Parameters for all entities
 $Location = 'WestEurope'
