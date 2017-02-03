@@ -40,7 +40,6 @@ $Credential = Get-Credential
 
 ## VMs to create
 #$ListofVMs = 'DC01','DC02','CA01'
-$ListofVMs = 'DC01'
 
 ## Create Resource Group for core networking
 
