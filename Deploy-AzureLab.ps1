@@ -26,6 +26,11 @@
         http://www.vcloudnine.de
 #>
 
+#Requires -Version 3.0
+#Requires -Module Azure, AzureRM.Profile
+
+## Establish connection to Azure
+# Do stuff
 
 
 
@@ -36,7 +41,9 @@ $NetworkResourceGroupName = 'lab-vnet-rg'
 $Credential = Get-Credential
 
 ## VMs to create
-$ListofVMs = 'DC01','DC02','CA01'
+#$ListofVMs = 'DC01','DC02','CA01'
+$ListofVMs = 'DC01'
+
 
 ## Create Resource Group for core networking
 
@@ -51,9 +58,9 @@ else
     New-AzureRmResourceGroup -Name $NetworkResourceGroupName -Location $Location
 
     ## Create core networking vNets and subnets
-    $SubnetName = 'Subnet_192_168_200_0'
-    $VNetName = 'Lab-vNet-192_168_200_0'
-    $VNetAddressPrefix = '192.168.200.0/24'
+    $SubnetName = 'Subnet_192_168_201_0'
+    $VNetName = 'Lab-vNet-192_168_201_0'
+    $VNetAddressPrefix = '192.168.201.0/24'
     $VNetSubnetAddressPrefix = $VNetAddressPrefix
     $SubnetName = New-AzureRmVirtualNetworkSubnetConfig -Name $SubnetName -AddressPrefix $VNetSubnetAddressPrefix
     New-AzureRmVirtualNetwork -Name $VNetName -ResourceGroupName $NetworkResourceGroupName -Location $Location -AddressPrefix $VNetAddressPrefix -Subnet $SubnetName
@@ -75,7 +82,7 @@ else
 
 ForEach ($VM in $ListofVMs) {
 
-    ## VM Config
+## VM Config
     $VMName = $VM
     $ComputerName = $VMName
     $VMSize = 'Standard_A2_v2'
@@ -98,4 +105,5 @@ ForEach ($VM in $ListofVMs) {
 
     ## Create the VM in Azure
     New-AzureRmVM -ResourceGroupName $VMResourceGroupName -Location $Location -VM $VirtualMachine
+    
 }
