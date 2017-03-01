@@ -70,8 +70,8 @@ Begin {
 Process {
     Foreach ($item in $vm) {
         $vmid = (Get-VM -Name $item).ExtensionData.MoRef.Value
-        Invoke-WebRequest -Uri https://$vmhost/screen?id=$vmid -Credential $cred -OutFile $pwd\$item.png
-        Write-Host -ForegroundColor Green "Console screenshot was saved as $pwd\$item.png"   
+        Invoke-WebRequest -Uri https://$vmhost/screen?id=$vmid -Credential $cred -OutFile $pwd\$item-$(Get-Date -f yyyymmdd-hhmm).png
+        Write-Host -ForegroundColor Green "Console screenshot was saved as $pwd\$item-$(Get-Date -f yyyymmdd-hhmm).png"   
     }
 }
 
