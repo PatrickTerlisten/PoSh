@@ -42,25 +42,25 @@ Param (
     [Parameter(Mandatory=$true, 
         ValueFromPipeline=$true, 
         ValueFromPipelineByPropertyName=$true)]
-    [String[]]$vm = "Name of VM",
+    [String[]]$VM = "Name of VM",
     [Parameter(Mandatory=$true)]
-    [string]$vmhost = "Name of vCenter or ESXi host",
-    [string]$username = "Username",
-    [string]$password = "Password"
+    [string]$VMhost = "Name of vCenter or ESXi host",
+    [string]$Username = "Username",
+    [string]$Password = "Password"
 )
 
 Begin {
     # Variables
-    $secstring = ConvertTo-SecureString $password -asplaintext -force
-    $cred = New-Object System.Management.Automation.PSCredential($username, $secstring)
+    $SecString = ConvertTo-SecureString $Password -asplaintext -force
+    $Cred = New-Object System.Management.Automation.PSCredential($Username, $SecString)
 
     # Connect to vCenter
     try {
-        Connect-VIServer -Server $vmhost -User $username -Password $password -ErrorAction stop | Out-Null
-        Write-Host -ForegroundColor Green "Successfully connectioned to $vmhost" 
+        Connect-VIServer -Server $VMhost -User $Username -Password $Password -ErrorAction stop | Out-Null
+        Write-Host -ForegroundColor Green "Successfully connectioned to $VMhost" 
     }
     catch {
-        throw "Connection to $vmhost failed"
+        throw "Connection to $VMhost failed"
     }
 
 }
@@ -68,10 +68,10 @@ Begin {
 # Do something
 
 Process {
-    Foreach ($item in $vm) {
-        $vmid = (Get-VM -Name $item).ExtensionData.MoRef.Value
-        Invoke-WebRequest -Uri https://$vmhost/screen?id=$vmid -Credential $cred -OutFile $pwd\$item-$(Get-Date -f yyyyMMdd-hhmm).png
-        Write-Host -ForegroundColor Green "Console screenshot was saved as $pwd\$item-$(Get-Date -f yyyyMMdd-hhmm).png"   
+    Foreach ($Item in $VM) {
+        $VMid = (Get-VM -Name $Item).ExtensionData.MoRef.Value
+        Invoke-WebRequest -Uri https://$VMhost/screen?id=$VMid -Credential $Cred -OutFile $Pwd\$Item-$(Get-Date -f yyyyMMdd-hhmm).png
+        Write-Host -ForegroundColor Green "Console screenshot was saved as $pwd\$Item-$(Get-Date -f yyyyMMdd-hhmm).png"   
     }
 }
 
@@ -80,5 +80,5 @@ Process {
 End {
     # Disconnect from vCenter
     Disconnect-VIServer -Force -Confirm:$false
-    Write-Host -ForegroundColor Green "Successfully disconnected from $vmhost"
+    Write-Host -ForegroundColor Green "Successfully disconnected from $VMhost"
 }
