@@ -37,7 +37,7 @@
 #Requires -Version 3.0
 #Requires -Module VMware.VimAutomation.Core
 
-# Paramter
+# Parameter
 
 Param (
     [Parameter(Mandatory=$true, 
