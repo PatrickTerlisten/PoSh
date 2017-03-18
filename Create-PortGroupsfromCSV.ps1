@@ -36,7 +36,7 @@
 # Paramter
 
 Param (
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string[]]$Hosts = "Comma-separated list of one or more hosts.",
     [string]$vCenter = "FQDN or IP address of the vCenter server",
     [string]$vSwitch = "vSwitch at which the port groups should be created",
@@ -46,15 +46,15 @@ Param (
 # Connect to vCenter
 
 try {
-        
-    Connect-VIServer -Server $vCenter -ErrorAction stop | Out-Null
-        
+   
+    Connect-VIServer -Server $vCenter -ErrorAction stop | Out-Null       
     Write-Host -ForegroundColor Green "Successfully connectioned to $vCenter" 
+
 }
 catch {
-        
+
     throw "Connection to $vCenter failed"
-    
+
 }
 
 # Import input data
@@ -71,7 +71,7 @@ foreach ($VMhost in $Hosts) {
     foreach ($Inputtuple in $Inputdata) {
 
         Get-VirtualSwitch -Name $vSwitch -VMHost $VMhost | New-VirtualPortGroup -Name $Inputtuple.portgroupname -VLanId $Inputtuple.vlanid
-    
+
     }
 }
 
