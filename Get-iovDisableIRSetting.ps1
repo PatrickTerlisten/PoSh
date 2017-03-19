@@ -10,7 +10,7 @@
         - vSphere Cluster
 
         History  
-        v0.1: Under development
+        v0.2: Under development
      
         .EXAMPLE
         Get-iovDisableIRSetting -Cluster LAB
@@ -46,7 +46,7 @@
 
 Param (
     [Parameter(Mandatory = $true)]
-    [string]$Cluster = "Name of the vSphere Cluster"
+    [string]$cluster = "Name of the vSphere Cluster"
 )
 
 # Get the ESXi hosts from the given cluster
@@ -57,7 +57,7 @@ $Hosts = Get-Cluster $cluster | Get-VMhost
 
 $Results = @()
 
-# Looping through the hosts
+# Looping through the VMHosts
 
 $Hosts | ForEach-Object {
 
@@ -66,11 +66,16 @@ $Hosts | ForEach-Object {
     $Arguments.option = "iovDisableIR"
     $Output = $EsxCliv2.system.settings.kernel.list.Invoke($Arguments)
 
+    # Get the vendor and model of the current VMHost
+
+    $Model = $_ | Get-View | Select-Object @{N = 'Model'; E = {$_.Hardware.SystemInfo.Vendor + ' ' + $_.Hardware.SystemInfo.Model}}
+
     # Properties for the PowerShell object
 
     $PSOProps = @{
  
         VMHost = $_.name
+        Model = $Model.Model
         iovDisableIR = $Output.configured
  
     }
@@ -78,7 +83,9 @@ $Hosts | ForEach-Object {
     $Results += New-Object -TypeName psobject -Property $PSOProps
 }
 
-$AffectedHosts = $Results | ? {$_.iovDisableIR -eq 'TRUE'} | Select-Object VMhost
+# Getting a list of the affected hosts by filtering the output for iovDisableIR = TRUE and server models with "Gen8"
+
+$AffectedHosts = $Results | ? {$_.iovDisableIR -eq 'TRUE' -and $_.Model -like '*Gen8'} | Select-Object VMhost
 
 $Count = ($AffectedHosts).Count
 
@@ -89,4 +96,11 @@ If ($Count -gt 0) {
 
     $AffectedHosts
     
+}
+
+else {
+
+    Write-host `n
+    Write-Host -ForegroundColor Green "None of your hosts seeems to be affected."
+
 }
