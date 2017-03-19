@@ -37,7 +37,8 @@
 #Requires -Version 3.0
 #Requires -Module VMware.VimAutomation.Core
 
-# Paramter
+# Parameter
+
 Param (
     [Parameter(Mandatory=$true, 
         ValueFromPipeline=$true, 
@@ -50,35 +51,46 @@ Param (
 )
 
 Begin {
+  
     # Variables
+  
     $SecString = ConvertTo-SecureString $Password -asplaintext -force
     $Cred = New-Object System.Management.Automation.PSCredential($Username, $SecString)
 
     # Connect to vCenter
     try {
+      
         Connect-VIServer -Server $VMhost -User $Username -Password $Password -ErrorAction stop | Out-Null
         Write-Host -ForegroundColor Green "Successfully connectioned to $VMhost" 
-    }
+    
+}
     catch {
-        throw "Connection to $VMhost failed"
-    }
 
+        throw "Connection to $VMhost failed"
+
+    }
 }
 
 # Do something
 
 Process {
+
     Foreach ($Item in $VM) {
+
         $VMid = (Get-VM -Name $Item).ExtensionData.MoRef.Value
         Invoke-WebRequest -Uri https://$VMhost/screen?id=$VMid -Credential $Cred -OutFile $Pwd\$Item-$(Get-Date -f yyyyMMdd-hhmm).png
         Write-Host -ForegroundColor Green "Console screenshot was saved as $pwd\$Item-$(Get-Date -f yyyyMMdd-hhmm).png"   
+
     }
 }
 
 # Clean up
 
 End {
+ 
     # Disconnect from vCenter
+ 
     Disconnect-VIServer -Force -Confirm:$false
     Write-Host -ForegroundColor Green "Successfully disconnected from $VMhost"
+
 }
