@@ -76,7 +76,10 @@ $Hosts | ForEach-Object {
  
         VMHost = $_.name
         Model = $Model.Model
-        iovDisableIR = $Output.configured
+        
+        # The value of "Runtime" represents the current active mode of iovDisableIR
+        
+        iovDisableIR = $Output.Runtime
  
     }
 
@@ -85,7 +88,7 @@ $Hosts | ForEach-Object {
 
 # Getting a list of the affected hosts by filtering the output for iovDisableIR = TRUE and server models with "Gen8"
 
-$AffectedHosts = $Results | ? {$_.iovDisableIR -eq 'TRUE' -and $_.Model -like '*Gen8'} | Select-Object VMhost
+$AffectedHosts = $Results | Where-Object {$_.iovDisableIR -eq 'TRUE' -and $_.Model -like '*Gen8'} | Select-Object VMhost
 
 $Count = ($AffectedHosts).Count
 
@@ -93,14 +96,16 @@ If ($Count -gt 0) {
     
     Write-host `n
     Write-Host -ForegroundColor Red "$Count hosts are affected. Please set iovDisableIR to FALSE on the affected hosts. The following hosts are affected:"
-
-    $AffectedHosts
+    Write-Host -ForegroundColor Red 'Please execute "esxcli system settings kernel set --setting=iovDisableIR -v FALSE" on each host and reboot the host afterwards.'
     
+    $AffectedHosts | Sort-Object VMhost
+
 }
 
 else {
 
     Write-host `n
     Write-Host -ForegroundColor Green "None of your hosts seeems to be affected."
+    Write-host `n
 
 }
