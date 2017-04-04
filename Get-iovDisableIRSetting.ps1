@@ -10,7 +10,7 @@
         - vSphere Cluster
 
         History  
-        v0.2: Under development
+        v0.3: Under development
      
         .EXAMPLE
         Get-iovDisableIRSetting -Cluster LAB
