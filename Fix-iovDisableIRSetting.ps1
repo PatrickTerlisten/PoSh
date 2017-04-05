@@ -14,7 +14,7 @@
         v1.0: First Release
      
         .EXAMPLE
-        Get-iovDisableIRSetting -Cluster LAB
+        Fix-iovDisableIRSetting -Cluster LAB
     
         .NOTES
         Author: Patrick Terlisten, patrick@blazilla.de, Twitter @PTerlisten
