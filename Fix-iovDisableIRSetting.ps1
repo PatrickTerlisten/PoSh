@@ -1,16 +1,17 @@
 <#
         .SYNOPSIS
-        This script checks if the iovDisableIR setting is set to FALSE.
+        This script checks if the iovDisableIR setting is set to FALSE. If not, it will set iovDisableIR to FALSE.
 
         .DESCRIPTION
-        The script checks the current setting of the Intel IOMMU interrupt remapper (iovDisableIR).
+        The script checks the current setting of the Intel IOMMU interrupt remapper (iovDisableIR) and changes the setting
+        if necessary.
 
         The script needs a single parameter: 
         
         - vSphere Cluster
 
         History  
-        v0.3: Under development
+        v1.0: First Release
      
         .EXAMPLE
         Get-iovDisableIRSetting -Cluster LAB
@@ -95,10 +96,9 @@ $Count = ($AffectedHosts).Count
 If ($Count -gt 0) {
     
     Write-host `n
-    Write-Host -ForegroundColor Red "$Count hosts are affected. Please set iovDisableIR to FALSE on the affected hosts. The following hosts are affected:"
-    Write-Host -ForegroundColor Red 'Please execute "esxcli system settings kernel set --setting=iovDisableIR -v FALSE" on each host and reboot the host afterwards.'
-    
-    $AffectedHosts | Sort-Object VMhost
+    Write-Host -ForegroundColor Red "The following hosts are affected."
+        
+    $AffectedHosts | Format-Table
 
 }
 
@@ -107,5 +107,41 @@ else {
     Write-host `n
     Write-Host -ForegroundColor Green "None of your hosts seeems to be affected."
     Write-host `n
+    break
 
 }
+
+# Change the iovDisableIR
+
+Write-Host -ForegroundColor Green "Setting iovDisableIR to FALSE."
+
+$AffectedHosts.VMhost | ForEach-Object {
+
+    # Current host
+
+    Write-host `n
+    Write-Host -ForegroundColor Green "Processing host $_."
+
+    try {
+        
+        # Change iovDisableIR
+
+        $EsxCliv2 = Get-EsxCli -V2 -VMHost $_
+        $Arguments = $EsxCliv2.system.settings.kernel.set.CreateArgs()
+        $arguments.setting = "iovDisableIR"
+        $arguments.value = $false
+        $EsxCliv2.system.settings.kernel.set.Invoke($Arguments)
+    }
+    
+    catch {
+        
+        Write-Host -ForegroundColor Red "Ups... something with $_ went wrong."
+
+    }
+    
+    Write-Host -ForegroundColor Green "Finished processing host $_."
+    
+}
+
+Write-host `n
+Write-Host -ForegroundColor Green "Script finished. Please reboot each host."
