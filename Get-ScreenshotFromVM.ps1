@@ -31,7 +31,7 @@
         https://community.spiceworks.com/scripts/show/1748-get-vmscreenshot-get-screen-shots-from-the-console-session-of-your-vm-s
 
         .LINK
-        http://www.vcloudnine.de
+        https://www.vcloudnine.de
 #>
 
 #Requires -Version 3.0

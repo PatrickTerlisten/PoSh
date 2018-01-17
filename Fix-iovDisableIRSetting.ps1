@@ -37,7 +37,7 @@
         http://h20564.www2.hpe.com/hpsc/doc/public/display?docId=emr_na-c05392947
 
         .LINK
-        http://www.vcloudnine.de
+        https://www.vcloudnine.de
 #>
 
 #Requires -Version 3.0
